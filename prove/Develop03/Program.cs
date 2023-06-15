@@ -5,7 +5,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Scripture scripture = new Scripture("1 Nephi 2","Yea, I make a record in the language of my father, which consists of the learning of the Jews and the language of the Egyptians.");
+        Scripture scripture = new Scripture("Proverbs 13:20"," Walk with the wise and become wise, for a companion of fools suffers harm.");
 
         
 

@@ -3,41 +3,35 @@ using System;
 class Program
 {
     static void Main(string[] args)
-    {
+    {   
 
-   Random randomGenerator = new Random();
-        int magicNumber = randomGenerator.Next(1, 100);
+        Random randomGenerator = new Random();
+        int number = randomGenerator.Next(1, 100);
+        while (true){
+            
+            Console.Write("What is your guess? ");
+            string myGuess = Console.ReadLine();
+            int guess = Int32.Parse(myGuess);
+            
 
-   int guess = -1;
-
-      //   Console.Write("What is the magic number? ");
-      // magicNumber = int.Parse(Console.ReadLine()); 
-
-  while (guess != magicNumber)
-
-    {
-
-
-     Console.Write("What is your guess?");
-        guess = int.Parse(Console.ReadLine());
-
-     if (guess > magicNumber)
-{
-  Console.WriteLine("Lower");
-}
-
-   else if (guess < magicNumber)
-   {
-  Console.WriteLine("Higher");
-}
-  
-else  
-     {
-      
-      Console.WriteLine("Congratulations! You guessed correctly!");
-
-    } 
-    }
-    
+            if (guess < number){
+                Console.WriteLine("Higher");
+            }
+            else if (guess > number){
+                Console.WriteLine("Lower");
+            }
+            else{
+                Console.WriteLine("You guessed it");
+                Console.Write("Do you want to play again? ");
+                string answer = Console.ReadLine();
+                if (answer == "yes"){
+                    number = randomGenerator.Next(1, 100);
+                    continue;
+                }
+                else{
+                    break;
+                }
+            }
+        }
     }
 }
