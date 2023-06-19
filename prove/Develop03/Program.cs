@@ -5,7 +5,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Scripture scripture = new Scripture("Proverbs 13:20"," Walk with the wise and become wise, for a companion of fools suffers harm.");
+        Scripture scripture = new Scripture("Proverbs 13:20-21"," Walk with the wise and become wise, for a companion of fools suffers harm. Trouble pursues the sinner, but the righteous are rewarded with good things.");
 
         
 
