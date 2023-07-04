@@ -1,0 +1,2 @@
+Goal:~|~0
+OneOffGoal:[ ]~|~Peak Grade~|~I need to complete the semester with a great grade.~|~100~|~False~|~
