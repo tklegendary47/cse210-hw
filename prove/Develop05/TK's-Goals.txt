@@ -1,0 +1,4 @@
+0
+SimpleGoal:Peak Performer,I need to finish the semester with a high grade.,100,False
+SimpleGoal:TK, The Pianist,I need to learn to play 5 of my favorite anime theme songs on piano by the end of the month.,100,False
+SimpleGoal:Mission Preparation,I need to complete reading the Book Of Mormon in 90 days before mission begins.,100,False
