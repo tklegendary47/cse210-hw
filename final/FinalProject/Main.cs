@@ -1,23 +1,24 @@
 using System;
 
-class Program
+class MainClass
 {
     static void Main(string[] args)
     {
         Menu menu = new Menu();
         while (true)
         {
-           Console.WriteLine("RECIPE MANAGER");
+           Console.WriteLine("Welcome to your RECIPE MANAGER '(^<>^)' ! ");
            Console.WriteLine("==============");
 
-            Console.WriteLine("Menu:");
+
+            Console.WriteLine("Select an option:");
             Console.WriteLine("1. Add recipe");
             Console.WriteLine("2. View recipes");
-            Console.WriteLine("3. View recipe details");
-            Console.WriteLine("4. Search recipes");
-            Console.WriteLine("5. Remove recipe");
-            Console.WriteLine("6. Exit");
-            Console.Write("Enter a menu option (1-6): ");
+            Console.WriteLine("3. Edit recipe");
+            Console.WriteLine("4. Search for recipe ");
+            Console.WriteLine("5. Generate shopping list");
+            Console.WriteLine("6. Plan meals");
+            Console.WriteLine("0. Exit");
             string input = Console.ReadLine();
             switch (input)
             {
@@ -28,22 +29,24 @@ class Program
                     menu.ViewRecipes();
                     break;
                 case "3":
-                    menu.ViewRecipeDetails();
+                    menu.EditRecipe();
                     break;
                 case "4":
-                    menu.SearchRecipes();
+                    menu.SearchRecipeOnline();
                     break;
                 case "5":
-                    menu.RemoveRecipe();
+                    menu.GenerateShoppingList();
                     break;
                 case "6":
-                    Console.WriteLine("Exiting program...");
-                    return;
+                    menu.PlanMeals();
+                    break;
+                case "0":
+                    Environment.Exit(0);
+                    break;
                 default:
-                    Console.WriteLine("Invalid menu option.");
+                    Console.WriteLine("Invalid option.");
                     break;
             }
-            Console.WriteLine();
         }
     }
 }

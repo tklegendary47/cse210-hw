@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Menu
 {
@@ -69,84 +70,125 @@ public class Menu
         }
     }
 
-    public void ViewRecipeDetails()
+    public void EditRecipe()
     {
-        if (recipes.Count == 0)
+        Console.WriteLine("Enter the name of the recipe to edit:");
+        string name = Console.ReadLine();
+        Recipe recipe = recipes.FirstOrDefault(r => r.Name.ToLower() == name.ToLower());
+        if (recipe == null)
         {
-            Console.WriteLine("No recipes found.");
+            Console.WriteLine($"Recipe '{name}' not found.");
             return;
         }
-        Console.WriteLine("Enter the name of the recipe:");
-        string recipeName = Console.ReadLine();
-        Recipe selectedRecipe = null;
-        foreach (Recipe recipe in recipes)
+        Console.WriteLine($"Editing recipe '{recipe.Name}'. Press enter to keep current value.");
+        Console.WriteLine($"Current type: {recipe.GetRecipeType()}");
+        Console.WriteLine("Enter new type (Entree, Dessert, Vegetarian):");
+        string recipeType = Console.ReadLine();
+        if (!string.IsNullOrEmpty(recipeType))
         {
-            if (recipe.Name.Equals(recipeName, StringComparison.OrdinalIgnoreCase))
+            switch (recipeType.ToLower())
             {
-                selectedRecipe = recipe;
+                case "entree":
+                    Console.WriteLine($"Current main ingredient: {((Entree)recipe).MainIngredient}");
+                    Console.WriteLine("Enter new main ingredient:");
+                    string mainIngredient = Console.ReadLine();
+                    if (!string.IsNullOrEmpty(mainIngredient))
+                    {
+                        ((Entree)recipe).MainIngredient = mainIngredient;
+                    }
+                    break;
+                case "dessert":
+                    Console.WriteLine($"Current oven temperature: {((Dessert)recipe).OvenTemperature}");
+                    Console.WriteLine("Enter new oven temperature:");
+                    string ovenTemperatureString = Console.ReadLine();
+                    if (!string.IsNullOrEmpty(ovenTemperatureString))
+                    {
+                        int ovenTemperature = int.Parse(ovenTemperatureString);
+                        ((Dessert)recipe).OvenTemperature = ovenTemperature;
+                    }
+                    break;
+                case "vegetarian":
+                    Console.WriteLine($"Current vegan: {((Vegetarian)recipe).IsVegan}");
+                    Console.WriteLine("Is this recipe vegan? (yes or no):");
+                    string isVeganString = Console.ReadLine();
+                    if (!string.IsNullOrEmpty(isVeganString))
+                    {
+                        bool isVegan = isVeganString.ToLower() == "yes";
+                        ((Vegetarian)recipe).IsVegan = isVegan;
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Invalid recipe type.");
+                    return;
+            }
+            Console.WriteLine($"Recipe type updated to {recipeType}.");
+        }
+        List<string> ingredients = recipe.Ingredients;
+        while (true)
+        {
+            Console.WriteLine($"Current ingredients: {string.Join(", ", ingredients)}");
+            Console.WriteLine("Enter an ingredient to add or remove (or 'done' to finish):");
+            string ingredient = Console.ReadLine();
+            if (ingredient.ToLower() == "done")
+            {
                 break;
             }
-        }
-        if (selectedRecipe != null)
-        {
-            Console.WriteLine($"Name: {selectedRecipe.Name}");
-            Console.WriteLine($"Type: {selectedRecipe.GetRecipeType()}");
-            Console.WriteLine("Ingredients:");
-            foreach (string ingredient in selectedRecipe.Ingredients)
+            if (ingredients.Contains(ingredient))
             {
-                Console.WriteLine($"- {ingredient}");
+                ingredients.Remove(ingredient);
+                Console.WriteLine($"Removed ingredient '{ingredient}'.");
             }
-            Console.WriteLine($"Instructions: {selectedRecipe.Instructions}");
+            else
+            {
+                ingredients.Add(ingredient);
+                Console.WriteLine($"Added ingredient '{ingredient}'.");
+            }
         }
-        else
+        recipe.Ingredients = ingredients;
+        Console.WriteLine("Enter new instructions:");
+        string instructions = Console.ReadLine();
+        if (!string.IsNullOrEmpty(instructions))
         {
-            Console.WriteLine($"Recipe '{recipeName}' not found.");
+            recipe.Instructions = instructions;
+            Console.WriteLine("Instructions updated.");
         }
     }
 
-    public void SearchRecipes()
+    public void SearchRecipeOnline()
     {
-        if (recipes.Count == 0)
+        Console.WriteLine("Enter a search term:");
+        string searchTerm = Console.ReadLine();
+        // Code to search for recipes online
+    }
+
+    public void GenerateShoppingList()
+    {
+        List<string> shoppingList = new List<string>();
+        foreach (Recipe recipe in recipes)
         {
-            Console.WriteLine("No recipes found.");
+            foreach (string ingredient in recipe.Ingredients)
+            {
+                if (!shoppingList.Contains(ingredient))
+                {
+                    shoppingList.Add(ingredient);
+                }
+            }
+        }
+        if (shoppingList.Count == 0)
+        {
+            Console.WriteLine("No ingredients found.");
             return;
         }
-        Console.WriteLine("Enter a search query:");
-        string query = Console.ReadLine();
-        List<Recipe> searchResults = RecipeSearch.Search(recipes, query);
-        if (searchResults.Count == 0)
+        shoppingList.Sort();
+        Console.WriteLine("Shopping List:");
+        foreach (string ingredient in shoppingList)
         {
-            Console.WriteLine("No results found.");
-            return;
-        }
-        Console.WriteLine("Search results:");
-        foreach (Recipe recipe in searchResults)
-        {
-            Console.WriteLine($"{recipe.Name} ({recipe.GetRecipeType()})");
+            Console.WriteLine(ingredient);
         }
     }
 
-    public void RemoveRecipe()
+    public void PlanMeals()
     {
-        Console.WriteLine("Enter the name of the recipe you want to remove:");
-        string recipeName = Console.ReadLine();
-        Recipe recipeToRemove = null;
-        foreach (Recipe recipe in recipes)
-        {
-            if (recipe.Name.Equals(recipeName, StringComparison.OrdinalIgnoreCase))
-            {
-                recipeToRemove = recipe;
-                break;
-            }
-        }
-        if (recipeToRemove != null)
-        {
-            recipes.Remove(recipeToRemove);
-            Console.WriteLine($"Recipe '{recipeToRemove.Name}' has been removed.");
-        }
-        else
-        {
-            Console.WriteLine($"Recipe '{recipeName}' not found.");
-        }
+        // Code to plan meals for the week
     }
 }
