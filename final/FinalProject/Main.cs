@@ -15,8 +15,11 @@ class MainClass
             Console.WriteLine("1. Add recipe");
             Console.WriteLine("2. View recipes");
             Console.WriteLine("3. Edit recipe");
-            Console.WriteLine("4. Plan meals");
-            Console.WriteLine("0. Exit");
+            Console.WriteLine("4. Search for a recipe you saved");
+            Console.WriteLine("5. Remove recipe");
+            Console.WriteLine("6. Plan meals");
+            Console.WriteLine("7. Exit");
+            Console.Write("Enter a menu option (1-7): ");
             string input = Console.ReadLine();
             switch (input)
             {
@@ -29,12 +32,18 @@ class MainClass
                 case "3":
                     menu.EditRecipe();
                     break;
-
                 case "4":
+                    menu.SearchRecipes();
+                    break;
+                case "5":
+                    menu.RemoveRecipe();
+                    break;
+
+                case "6":
                     menu.PlanMeals();
                     break;
-                case "0":
-                    Environment.Exit(0);
+                case "7":
+                    Environment.Exit(7);
                     break;
                 default:
                     Console.WriteLine("Invalid option.");

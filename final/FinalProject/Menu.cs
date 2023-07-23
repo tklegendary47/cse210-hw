@@ -5,32 +5,50 @@ class Menu
 {
     private List<Recipe> _recipes = new List<Recipe>();
 
-    public void AddRecipe()
+   public void AddRecipe()
     {
-        Console.WriteLine("Enter recipe name:");
+        Console.WriteLine("Enter the recipe name:");
         string name = Console.ReadLine();
-
-        Console.WriteLine("Enter recipe type (1 for Dessert, 2 for Entree):");
-        string recipeTypeInput = Console.ReadLine();
-        Recipe recipe;
-        switch (recipeTypeInput)
+        Console.WriteLine("Enter the recipe type (Entree, Dessert, Vegetarian):");
+        string recipeType = Console.ReadLine();
+        List<string> ingredients = new List<string>();
+        while (true)
         {
-            case "1":
-                recipe = CreateDessert();
+            Console.WriteLine("Enter an ingredient (or 'done' to finish):");
+            string ingredient = Console.ReadLine();
+            if (ingredient.ToLower() == "done")
+            {
                 break;
-            case "2":
-                recipe = CreateEntree();
+            }
+            ingredients.Add(ingredient);
+        }
+        Console.WriteLine("Enter the recipe instructions:");
+        string instructions = Console.ReadLine();
+        Recipe recipe;
+        switch (recipeType.ToLower())
+        {
+            case "entree":
+                Console.WriteLine("Enter the main ingredient:");
+                string mainIngredient = Console.ReadLine();
+                recipe = new Entree(name, ingredients, instructions, mainIngredient);
+                break;
+            case "dessert":
+                Console.WriteLine("Enter the oven temperature:");
+                int ovenTemperature = int.Parse(Console.ReadLine());
+                recipe = new Dessert(name, ingredients, instructions, ovenTemperature);
+                break;
+            case "vegetarian":
+                Console.WriteLine("Is this recipe vegan? (yes or no):");
+                bool isVegan = Console.ReadLine().ToLower() == "yes";
+                recipe = new Vegetarian(name, ingredients, instructions, isVegan);
                 break;
             default:
-                Console.WriteLine("Invalid input.");
+                Console.WriteLine("Invalid recipe type.");
                 return;
         }
-
         _recipes.Add(recipe);
-
-        Console.WriteLine($"Recipe '{name}' added successfully!");
+        Console.WriteLine($"Recipe '{recipe.Name}' has been added successfully!.");
     }
-
     public void ViewRecipes()
     {
         if (_recipes.Count == 0)
@@ -194,4 +212,52 @@ class Menu
 
         return new Entree("", ingredients, instructions, mainIngredient);
     }
+ public void RemoveRecipe()
+    {
+        Console.WriteLine("Enter the name of the recipe you want to remove:");
+        string recipeName = Console.ReadLine();
+        Recipe recipeToRemove = null;
+        foreach (Recipe recipe in _recipes)
+        {
+            if (recipe.Name.Equals(recipeName, StringComparison.OrdinalIgnoreCase))
+            {
+                recipeToRemove = recipe;
+                break;
+            }
+        }
+        if (recipeToRemove != null)
+        {
+            _recipes.Remove(recipeToRemove);
+            Console.WriteLine($"Recipe '{recipeToRemove.Name}' has been removed.");
+        }
+        else
+        {
+            Console.WriteLine($"Recipe '{recipeName}' not found.");
+        }
+    }
+
+ public void SearchRecipes()
+    {
+        if (_recipes.Count == 0)
+        {
+            Console.WriteLine("No recipes found.");
+            return;
+        }
+        Console.WriteLine("Enter a search query:");
+        string query = Console.ReadLine();
+        List<Recipe> searchResults = RecipeSearch.Search(_recipes, query);
+        if (searchResults.Count == 0)
+        {
+            Console.WriteLine("No results found.");
+            return;
+        }
+        Console.WriteLine("Search results:");
+        foreach (Recipe recipe in searchResults)
+        {
+            Console.WriteLine($"{recipe.Name} ({recipe.GetRecipeType()})");
+        }
+    }
+
+
 }
+
