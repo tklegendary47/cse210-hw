@@ -91,7 +91,7 @@ class Menu
         Console.WriteLine($"Recipe '{recipe.Name}' updated successfully!");
     }
 
-    public void SearchRecipeOnline()
+    public void searchRecipeOnline()
     {
         // TODO: Implement search recipe online
     }
