@@ -12,7 +12,7 @@ public class RecipeList
         _recipes.Add(recipe);
     }
 
-    public void DeleteRecipe(Recipe recipe)
+    public void RemoveRecipe(Recipe recipe)
     {
         _recipes.Remove(recipe);
     }
@@ -22,8 +22,9 @@ public class RecipeList
         return _recipes.Select(r => r.Name).ToList();
     }
 
-    public Recipe GetRecipe(int index)
+    public IEnumerable<Recipe> Recipes
     {
-        return _recipes[index];
+        get { return _recipes; }
+        set { _recipes = value.ToList(); }
     }
 }

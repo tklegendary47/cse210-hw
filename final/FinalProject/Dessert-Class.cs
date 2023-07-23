@@ -1,13 +1,17 @@
-using System.Collections.Generic;
-
 public class Dessert : Recipe
 {
-    public int OvenTemperature { get; set; }
+    private int _ovenTemperature;
 
     public Dessert(string name, List<string> ingredients, string instructions, int ovenTemperature)
         : base(name, ingredients, instructions)
     {
-        OvenTemperature = ovenTemperature;
+        _ovenTemperature = ovenTemperature;
+    }
+
+    public int OvenTemperature
+    {
+        get { return _ovenTemperature; }
+        set { _ovenTemperature = value; }
     }
 
     public override string GetRecipeType()

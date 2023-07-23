@@ -15,9 +15,7 @@ class MainClass
             Console.WriteLine("1. Add recipe");
             Console.WriteLine("2. View recipes");
             Console.WriteLine("3. Edit recipe");
-            Console.WriteLine("4. Search for recipe ");
-            Console.WriteLine("5. Generate shopping list");
-            Console.WriteLine("6. Plan meals");
+            Console.WriteLine("4. Plan meals");
             Console.WriteLine("0. Exit");
             string input = Console.ReadLine();
             switch (input)
@@ -31,13 +29,8 @@ class MainClass
                 case "3":
                     menu.EditRecipe();
                     break;
+
                 case "4":
-                    menu.SearchRecipeOnline();
-                    break;
-                case "5":
-                    menu.GenerateShoppingList();
-                    break;
-                case "6":
                     menu.PlanMeals();
                     break;
                 case "0":

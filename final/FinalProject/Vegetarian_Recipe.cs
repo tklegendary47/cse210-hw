@@ -1,13 +1,17 @@
-using System.Collections.Generic;
-
 public class Vegetarian : Recipe
 {
-    public bool IsVegan { get; set; }
+    private bool _isVegan;
 
     public Vegetarian(string name, List<string> ingredients, string instructions, bool isVegan)
         : base(name, ingredients, instructions)
     {
-        IsVegan = isVegan;
+        _isVegan = isVegan;
+    }
+
+    public bool IsVegan
+    {
+        get { return _isVegan; }
+        set { _isVegan = value; }
     }
 
     public override string GetRecipeType()

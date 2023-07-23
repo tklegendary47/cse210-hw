@@ -1,5 +1,3 @@
-using System;
-
 public static class UserInput
 {
     public static string GetString(string prompt)
@@ -10,29 +8,14 @@ public static class UserInput
 
     public static int GetInt(string prompt)
     {
-        int result;
         while (true)
         {
             Console.Write(prompt);
-            if (int.TryParse(Console.ReadLine(), out result))
+            if (int.TryParse(Console.ReadLine(), out int result))
             {
                 return result;
             }
-            Console.WriteLine("Invalid input. Please enter a valid integer.");
-        }
-    }
-
-    public static double GetDouble(string prompt)
-    {
-        double result;
-        while (true)
-        {
-            Console.Write(prompt);
-            if (double.TryParse(Console.ReadLine(), out result))
-            {
-                return result;
-            }
-            Console.WriteLine("Invalid input. Please enter a valid number.");
+            Console.WriteLine("Invalid input. Please enter an integer.");
         }
     }
 }

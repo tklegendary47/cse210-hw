@@ -1,16 +1,32 @@
-using System.Collections.Generic;
-
 public abstract class Recipe
 {
-    public string Name { get; set; }
-    public List<string> Ingredients { get; set; }
-    public string Instructions { get; set; }
+    private string _name;
+    private List<string> _ingredients;
+    private string _instructions;
 
     public Recipe(string name, List<string> ingredients, string instructions)
     {
-        Name = name;
-        Ingredients = ingredients;
-        Instructions = instructions;
+        _name = name;
+        _ingredients = ingredients;
+        _instructions = instructions;
+    }
+
+    public string Name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+
+    public List<string> Ingredients
+    {
+        get { return _ingredients; }
+        set { _ingredients = value; }
+    }
+
+    public string Instructions
+    {
+        get { return _instructions; }
+        set { _instructions = value; }
     }
 
     public abstract string GetRecipeType();
