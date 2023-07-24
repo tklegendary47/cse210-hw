@@ -5,50 +5,67 @@ class Menu
 {
     private List<Recipe> _recipes = new List<Recipe>();
 
-   public void AddRecipe()
+  public void AddRecipe()
+{
+    Console.WriteLine("Enter the recipe name:");
+    string name = Console.ReadLine();
+    Console.WriteLine("Enter the recipe type (Entree, Dessert, Vegetarian):");
+    string recipeType = Console.ReadLine();
+    List<string> ingredients = new List<string>();
+    while (true)
     {
-        Console.WriteLine("Enter the recipe name:");
-        string name = Console.ReadLine();
-        Console.WriteLine("Enter the recipe type (Entree, Dessert, Vegetarian):");
-        string recipeType = Console.ReadLine();
-        List<string> ingredients = new List<string>();
-        while (true)
+        Console.WriteLine("Enter an ingredient (or 'done' to finish):");
+        string ingredient = Console.ReadLine();
+        if (ingredient.ToLower() == "done")
         {
-            Console.WriteLine("Enter an ingredient (or 'done' to finish):");
-            string ingredient = Console.ReadLine();
-            if (ingredient.ToLower() == "done")
-            {
-                break;
-            }
-            ingredients.Add(ingredient);
+            break;
         }
-        Console.WriteLine("Enter the recipe instructions:");
-        string instructions = Console.ReadLine();
-        Recipe recipe;
-        switch (recipeType.ToLower())
-        {
-            case "entree":
-                Console.WriteLine("Enter the main ingredient:");
-                string mainIngredient = Console.ReadLine();
-                recipe = new Entree(name, ingredients, instructions, mainIngredient);
-                break;
-            case "dessert":
-                Console.WriteLine("Enter the oven temperature:");
-                int ovenTemperature = int.Parse(Console.ReadLine());
-                recipe = new Dessert(name, ingredients, instructions, ovenTemperature);
-                break;
-            case "vegetarian":
-                Console.WriteLine("Is this recipe vegan? (yes or no):");
-                bool isVegan = Console.ReadLine().ToLower() == "yes";
-                recipe = new Vegetarian(name, ingredients, instructions, isVegan);
-                break;
-            default:
-                Console.WriteLine("Invalid recipe type.");
-                return;
-        }
-        _recipes.Add(recipe);
-        Console.WriteLine($"Recipe '{recipe.Name}' has been added successfully!.");
+        ingredients.Add(ingredient);
     }
+    Console.WriteLine("Enter the recipe instructions:");
+    string instructions = Console.ReadLine();
+    Recipe recipe;
+    switch (recipeType.ToLower())
+    {
+        case "entree":
+            Console.WriteLine("Enter the main ingredient:");
+            string mainIngredient = Console.ReadLine();
+            recipe = new Entree(name, ingredients, instructions, mainIngredient);
+            break;
+        case "dessert":
+            Console.WriteLine("Enter the oven temperature:");
+            int ovenTemperature = int.Parse(Console.ReadLine());
+            recipe = new Dessert(name, ingredients, instructions, ovenTemperature);
+            break;
+        case "vegetarian":
+            Console.WriteLine("Is this recipe vegan? (yes or no):");
+            bool isVegan = Console.ReadLine().ToLower() == "yes";
+            recipe = new Vegetarian(name, ingredients, instructions, isVegan);
+            break;
+        default:
+            Console.WriteLine("Invalid recipe type.");
+            return;
+    }
+    _recipes.Add(recipe);
+
+    // Save the recipe to a text file
+    string fileName = $"{name}.txt";
+    using (StreamWriter writer = new StreamWriter(fileName))
+    {
+        writer.WriteLine($"Name: {name}");
+        writer.WriteLine($"Type: {recipeType}");
+        writer.WriteLine("Ingredients:");
+        foreach (string ingredient in ingredients)
+        {
+            writer.WriteLine($"- {ingredient}");
+        }
+        writer.WriteLine("Instructions:");
+        writer.WriteLine(instructions);
+    }
+
+    Console.WriteLine($"Recipe '{recipe.Name}' has been added successfully and saved to '{fileName}'!.");
+}
+
     public void ViewRecipes()
     {
         if (_recipes.Count == 0)
