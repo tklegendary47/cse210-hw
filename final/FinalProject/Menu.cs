@@ -66,65 +66,110 @@ class Menu
     Console.WriteLine($"Recipe '{recipe.Name}' has been added successfully and saved to '{fileName}'!.");
 }
 
-    public void ViewRecipes()
+   public void ViewRecipes()
+{
+    string[] files = Directory.GetFiles(".", "*.txt");
+    if (files.Length == 0)
     {
-        if (_recipes.Count == 0)
-        {
-            Console.WriteLine("No recipes found.");
-            return;
-        }
-
-        for (int i = 0; i < _recipes.Count; i++)
-        {
-            Console.WriteLine($"{i+1}. {_recipes[i].Name} ({_recipes[i].GetRecipeType()})");
-        }
+        Console.WriteLine("No recipes found.");
+        return;
     }
 
-    public void EditRecipe()
+    for (int i = 0; i < files.Length; i++)
     {
-        Console.WriteLine("Enter the number of the recipe you want to edit:");
-        ViewRecipes();
-        int recipeNum = int.Parse(Console.ReadLine());
+        string fileName = Path.GetFileName(files[i]);
+        using (StreamReader reader = new StreamReader(files[i]))
+        {
+            string name = reader.ReadLine().Split(':')[1].Trim();
+            string type = reader.ReadLine().Split(':')[1].Trim();
+            Console.WriteLine($"{i+1}. {name} ({type})");
+        }
+    }
+}
 
-        Recipe recipe = _recipes[recipeNum - 1];
 
-        Console.WriteLine($"Editing recipe '{recipe.Name}' ({recipe.GetRecipeType()})");
+   public void EditRecipe()
+{
+    Console.WriteLine("Enter the number of the recipe you want to edit:");
+    ViewRecipes();
+    int recipeNum = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter new recipe name (leave blank to keep current name):");
+    string fileName = Path.GetFileName(Directory.GetFiles(".", "*.txt")[recipeNum-1]);
+    using (StreamReader reader = new StreamReader(fileName))
+    {
+        string name = reader.ReadLine().Split(':')[1].Trim();
+        string type = reader.ReadLine().Split(':')[1].Trim();
+        List<string> ingredients = new List<string>();
+        string line;
+        while ((line = reader.ReadLine()) != null && line != "Instructions:")
+        {
+            if (line.StartsWith("-"))
+            {
+                ingredients.Add(line.Substring(2));
+            }
+        }
+        string instructions = reader.ReadToEnd();
+
+        Console.WriteLine($"Editing recipe '{name}' ({type})");
+
+        Console.WriteLine("Enter the new recipe name:");
         string newName = Console.ReadLine();
-        if (!string.IsNullOrEmpty(newName))
+        Console.WriteLine("Enter the new recipe type (Entree, Dessert, Vegetarian):");
+        string newType = Console.ReadLine();
+        List<string> newIngredients = new List<string>();
+        while (true)
         {
-            recipe.Name = newName;
-            Console.WriteLine("Recipe name updated successfully!");
-        }
-
-        if (recipe is Dessert)
-        {
-            Dessert dessert = (Dessert)recipe;
-
-            Console.WriteLine("Enter new oven temperature (leave blank to keep current temperature):");
-            string newTempInput = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newTempInput))
+            Console.WriteLine("Enter a new ingredient (or 'done' to finish):");
+            string ingredient = Console.ReadLine();
+            if (ingredient.ToLower() == "done")
             {
-                dessert.OvenTemperature = int.Parse(newTempInput);
-                Console.WriteLine("Oven temperature updated successfully!");
+                break;
             }
+            newIngredients.Add(ingredient);
         }
-        else if (recipe is Entree)
+        Console.WriteLine("Enter the new recipe instructions:");
+        string newInstructions = Console.ReadLine();
+
+        Recipe recipe;
+        switch (newType.ToLower())
         {
-            Entree entree = (Entree)recipe;
-
-            Console.WriteLine("Enter new main ingredient (leave blank to keep current ingredient):");
-            string newIngredient = Console.ReadLine();
-            if (!string.IsNullOrEmpty(newIngredient))
-            {
-                entree.MainIngredient = newIngredient;
-                Console.WriteLine("Main ingredient updated successfully!");
-            }
+            case "entree":
+                Console.WriteLine("Enter the new main ingredient:");
+                string mainIngredient = Console.ReadLine();
+                recipe = new Entree(newName, newIngredients, newInstructions, mainIngredient);
+                break;
+            case "dessert":
+                Console.WriteLine("Enter the new oven temperature:");
+                int ovenTemperature = int.Parse(Console.ReadLine());
+                recipe = new Dessert(newName, newIngredients, newInstructions, ovenTemperature);
+                break;
+            case "vegetarian":
+                Console.WriteLine("Is this recipe vegan? (yes or no):");
+                bool isVegan = Console.ReadLine().ToLower() == "yes";
+                recipe = new Vegetarian(newName, newIngredients, newInstructions, isVegan);
+                break;
+            default:
+                Console.WriteLine("Invalid recipe type.");
+                return;
         }
 
-        Console.WriteLine($"Recipe '{recipe.Name}' updated successfully!");
+        // Save the modified recipe to the text file
+        using (StreamWriter writer = new StreamWriter(fileName))
+        {
+            writer.WriteLine($"Name: {newName}");
+            writer.WriteLine($"Type: {newType}");
+            writer.WriteLine("Ingredients:");
+            foreach (string ingredient in newIngredients)
+            {
+                writer.WriteLine($"- {ingredient}");
+            }
+            writer.WriteLine("Instructions:");
+            writer.WriteLine(newInstructions);
+        }
+
+        Console.WriteLine($"Recipe '{name}' has been updated to '{newName}' successfully and saved to '{fileName}'!.");
     }
+}
 
     public void searchRecipeOnline()
     {
@@ -228,7 +273,39 @@ class Menu
         string instructions = Console.ReadLine();
 
         return new Entree("", ingredients, instructions, mainIngredient);
+
     }
+
+private Vegetarian CreateVegetarian()
+{
+    Console.WriteLine("Enter recipe name:");
+    string name = Console.ReadLine();
+
+    List<string> ingredients = new List<string>();
+    while (true)
+    {
+        Console.WriteLine("Enter an ingredient (or 'done' to finish):");
+        string ingredient = Console.ReadLine();
+        if (ingredient == "done")
+        {
+            break;
+        }
+        ingredients.Add(ingredient);
+    }
+
+    Console.WriteLine("Enter instructions:");
+    string instructions = Console.ReadLine();
+
+    Console.WriteLine("Is this recipe vegan? (yes or no):");
+    bool isVegan = Console.ReadLine().ToLower() == "yes";
+
+    return new Vegetarian(name, ingredients, instructions, isVegan);
+}
+
+
+
+
+
  public void RemoveRecipe()
     {
         Console.WriteLine("Enter the name of the recipe you want to remove:");
@@ -253,27 +330,66 @@ class Menu
         }
     }
 
- public void SearchRecipes()
+public void SearchRecipes()
+{
+    Console.WriteLine("Enter a search query:");
+    string query = Console.ReadLine();
+
+    List<Recipe> matchingRecipes = new List<Recipe>();
+    foreach (string fileName in Directory.GetFiles(".", "*.txt"))
     {
-        if (_recipes.Count == 0)
+        using (StreamReader reader = new StreamReader(fileName))
         {
-            Console.WriteLine("No recipes found.");
-            return;
+            string name = reader.ReadLine().Split(':')[1].Trim();
+            List<string> ingredients = new List<string>();
+            string line;
+            while ((line = reader.ReadLine()) != null && line != "Instructions:")
+            {
+                if (line.StartsWith("-"))
+                {
+                    ingredients.Add(line.Substring(2));
+                }
+            }
+            if (name.ToLower().Contains(query.ToLower()) || ingredients.Any(i => i.ToLower().Contains(query.ToLower())))
+            {
+                string type = reader.ReadLine().Split(':')[1].Trim();
+                string instructions = reader.ReadToEnd();
+                Recipe recipe;
+                switch (type.ToLower())
+                {
+                    case "entree":
+                        string mainIngredient = ingredients[0];
+                        recipe = new Entree(name, ingredients.Skip(1).ToList(), instructions, mainIngredient);
+                        break;
+                    case "dessert":
+                        int ovenTemperature = int.Parse(ingredients[0]);
+                        recipe = new Dessert(name, ingredients.Skip(1).ToList(), instructions, ovenTemperature);
+                        break;
+                    case "vegetarian":
+                        bool isVegan = ingredients[0].ToLower() == "true";
+                        recipe = new Vegetarian(name, ingredients.Skip(1).ToList(), instructions, isVegan);
+                        break;
+                    default:
+                        continue;
+                }
+                matchingRecipes.Add(recipe);
+            }
         }
-        Console.WriteLine("Enter a search query:");
-        string query = Console.ReadLine();
-        List<Recipe> searchResults = RecipeSearch.Search(_recipes, query);
-        if (searchResults.Count == 0)
-        {
-            Console.WriteLine("No results found.");
-            return;
-        }
-        Console.WriteLine("Search results:");
-        foreach (Recipe recipe in searchResults)
+    }
+
+    if (matchingRecipes.Count == 0)
+    {
+        Console.WriteLine($"No recipes found that contain '{query}'.");
+    }
+    else
+    {
+        Console.WriteLine($"Found {matchingRecipes.Count} recipes that contain '{query}':");
+        foreach (Recipe recipe in matchingRecipes)
         {
             Console.WriteLine($"{recipe.Name} ({recipe.GetRecipeType()})");
         }
     }
+}
 
 
 }
